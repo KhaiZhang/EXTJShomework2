@@ -1,0 +1,208 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Hello World</title>
+    <link rel="stylesheet" type="text/css" href="css/ext-all.css"/>
+
+    <!-- GC -->
+    <!-- LIBS -->
+    <script type="text/javascript" src="ext-base.js"></script>
+    <!-- ENDLIBS -->
+
+    <script type="text/javascript" src="ext-all.js"></script>
+    <script>
+      Ext.QuickTips.init();  // enable tooltips
+        Ext.onReady(function(){
+
+        var navHandler = function(direction){
+
+        var wizard = Ext.getCmp('wizard').layout;
+        var prev = Ext.getCmp('move-prev');
+        var next = Ext.getCmp('move-next');
+        var submit = Ext.getCmp('submit');
+        var activeId = wizard.activeItem.id;
+
+        if (activeId == 'card-0') {
+            if (direction == 1) {
+                wizard.setActiveItem('card-1');
+                prev.setDisabled(false);
+            }
+        } else if (activeId == 'card-1') {
+            if (direction == -1) {
+                wizard.setActiveItem(0);
+                prev.setDisabled(true);
+            } else {
+                let answer1 = Ext.getCmp('question1').items.items.filter(v => v.checked === true)
+                let answer2 = Ext.getCmp('question2').items.items.filter(v => v.checked === true)
+                if(answer1.length != 0 ){
+                  Ext.getCmp('form0').setValue(answer1[0].boxLabel)
+                }
+                if(answer2.length != 0){
+                  let sum = ''
+                  answer2.forEach(element => {
+                    sum = sum + element.boxLabel+';  '
+                  });
+                  console.log(sum)
+                  Ext.getCmp('form1').setValue(sum)
+                }
+                wizard.setActiveItem(2);
+                next.setDisabled(true);
+                submit.setDisabled(false);
+            }
+        } else if (activeId == 'card-2') {
+            if (direction == -1) {
+                wizard.setActiveItem(1);
+                next.setDisabled(false);
+                submit.setDisabled(true)
+            }
+          }
+         };
+    var viewport = new Ext.Viewport({
+          layout: 'border',
+          items:[
+            {
+              region:'center',
+              split: true,
+              border: true,
+              id: 'wizard',
+              title: 'question section',
+              layout: 'card',
+              activeItem: 0,
+              bbar: [
+                {
+                  id: 'move-prev',
+                  text: '上一步',
+                  handler: navHandler.createDelegate(this,[-1]),
+                  disabled:true
+                },
+                '->', 
+                {
+                  id: 'move-next',
+                  text: '下一步',
+                  handler: navHandler.createDelegate(this,[1]),
+                },
+                {
+                  id: 'submit',
+                  text: '提交',
+                  style:'margin:0 50',
+                  listeners:{
+                    'click':function(){
+                       Ext.Msg.alert('greeting',"congratulation")
+                    }
+                  },
+                  disabled:true
+                }
+              ],
+              items:[
+                {
+                  id : 'card-0',
+                  xtype:'panel',
+                  layout: 'fit',
+                  items:[{
+                    id: 'question1',
+                    xtype: 'fieldset',
+                    defaultType:'radio',
+                    items:[
+                      {
+                        id: 'checkboxTitle',
+                        xtype:'box',
+                        contentEl:'q1',
+                        style: 'margin-left:100px;'
+                      },
+                      {
+                        id: 'radio0',
+                        boxLabel:'有害垃圾',
+                        name:'rubbish'
+                      },
+                      {
+                        id: 'radio1',
+                        boxLabel:'干垃圾',
+                        name:'rubbish'
+                      },
+                      {
+                        id: 'radio2',
+                        boxLabel:'湿垃圾',
+                        name:'rubbish'
+                      },
+                      {
+                        id: 'radio3',
+                        boxLabel:'可回收垃圾',
+                        name:'rubbish'
+                      }
+                    ]
+                  }]  
+                },
+                {
+                  id : 'card-1',
+                  xtype:'panel',
+                  layout: 'fit',
+                  items:[{
+                    id: 'question2',
+                    xtype: 'fieldset',
+                    defaultType:'checkbox',
+                    items:[
+                      {
+                        id: 'box2',
+                        xtype:'box',
+                        contentEl:'q2',
+                        style: 'margin-left:100px;'
+                      },
+                      {
+                        id: 'checkbox0',
+                        boxLabel:'直接扔了', 
+                      },
+                      {
+                        id: 'checkbox1',
+                        boxLabel:'包装好再处理',   
+                      },
+                      {
+                        id: 'checkbox2',
+                        boxLabel:'学习相关知识再处理',   
+                      },
+                      {
+                        id: 'checkbox3',
+                        boxLabel:'不用管它', 
+                      }
+                    ]
+                  }]
+                },
+                {
+                  id : 'card-2',
+                  xtype:'panel',
+                  items:[
+                    {
+                      xtype: 'form',
+                      defaultType: 'textfield',
+                      labelAlign: 'center',
+                      labelWidth: 200,
+				              frame: true,
+                      items:[
+                        {
+                          id: 'form0',
+                          fieldLabel:'Q1: 番茄是什么类型的垃圾？',
+                          width:500
+                        },
+                        {
+                          id: 'form1',
+                          fieldLabel:'Q2: 怎么处理有害垃圾？',
+                          width:500
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }); 
+      });           
+    </script>
+</head>
+<style>
+</style>
+<body id="docbody">
+    <div id='test'></div>
+    <div id='q1'>Q1: 番茄是什么类型的垃圾？</div>
+    <div id='q2'>Q2: 怎么处理有害垃圾？</div>
+</body>
+</html>
